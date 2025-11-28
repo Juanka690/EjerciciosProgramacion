@@ -1,0 +1,97 @@
+@model EjerciciosProgramacion.Models.ExpenseManagerViewModel
+@{
+    ViewData["Title"] = "Gestor de gastos";
+    var total = Model.Expenses.Sum(e => e.Amount);
+    var byCategory = Model.Expenses
+        .GroupBy(e => e.Category)
+        .Select(g => new { Category = g.Key, Total = g.Sum(x => x.Amount) })
+        .OrderByDescending(g => g.Total)
+        .ToList();
+}
+
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <div>
+            <h1 class="h3 mb-0">Gestor de gastos</h1>
+            <p class="text-muted mb-0">Agrega y resume tus gastos con procesamiento en C#.</p>
+        </div>
+        <a asp-controller="Home" asp-action="Index" class="btn btn-link">Volver al índice</a>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-12 col-lg-5">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <form asp-action="ExpenseManager" method="post" class="vstack gap-3">
+                        <div class="form-group">
+                            <label asp-for="NewExpense.Description" class="form-label">Descripción</label>
+                            <input asp-for="NewExpense.Description" class="form-control" />
+                            <span asp-validation-for="NewExpense.Description" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="NewExpense.Category" class="form-label">Categoría</label>
+                            <input asp-for="NewExpense.Category" class="form-control" />
+                            <span asp-validation-for="NewExpense.Category" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="NewExpense.Amount" class="form-label">Monto</label>
+                            <input asp-for="NewExpense.Amount" class="form-control" />
+                            <span asp-validation-for="NewExpense.Amount" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="NewExpense.Date" class="form-label">Fecha</label>
+                            <input asp-for="NewExpense.Date" class="form-control" />
+                        </div>
+                        <button class="btn btn-primary" type="submit">Agregar gasto</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-lg-7">
+            <div class="card shadow-sm mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">Totales</h5>
+                    <p class="mb-1">Total general: <strong>@total.ToString("C")</strong></p>
+                    @foreach (var item in byCategory)
+                    {
+                        <p class="mb-0">@item.Category: <strong>@item.Total.ToString("C")</strong></p>
+                    }
+                </div>
+            </div>
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Lista de gastos</h5>
+                    @if (!Model.Expenses.Any())
+                    {
+                        <p class="text-muted">Agrega tu primer gasto.</p>
+                    }
+                    else
+                    {
+                        <div class="list-group">
+                            @foreach (var expense in Model.Expenses)
+                            {
+                                <div class="list-group-item d-flex justify-content-between align-items-start">
+                                    <div>
+                                        <h6 class="mb-1">@expense.Description</h6>
+                                        <small class="text-muted">@expense.Category · @expense.Date.ToShortDateString()</small>
+                                    </div>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <span class="fw-bold">@expense.Amount.ToString("C")</span>
+                                        <form asp-action="RemoveExpense" method="post">
+                                            <input type="hidden" name="id" value="@expense.Id" />
+                                            <button class="btn btn-sm btn-outline-danger" type="submit">Eliminar</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

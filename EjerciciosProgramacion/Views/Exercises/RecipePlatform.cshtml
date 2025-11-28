@@ -1,0 +1,90 @@
+@model EjerciciosProgramacion.Models.RecipePlatformViewModel
+@{
+    ViewData["Title"] = "Plataforma de recetas";
+}
+
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <div>
+            <h1 class="h3 mb-0">Plataforma de recetas</h1>
+            <p class="text-muted mb-0">Filtrado y guardado realizado en C#.</p>
+        </div>
+        <a asp-controller="Home" asp-action="Index" class="btn btn-link">Volver al índice</a>
+    </div>
+
+    <form asp-action="RecipePlatform" method="get" class="input-group mb-3">
+        <input type="text" name="search" value="@Model.Search" class="form-control" placeholder="Buscar por título, categoría o ingrediente" />
+        <button class="btn btn-outline-secondary" type="submit">Buscar</button>
+    </form>
+
+    <div class="row g-4">
+        <div class="col-12 col-lg-5">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <form asp-action="RecipePlatform" method="post" class="vstack gap-3">
+                        <div class="form-group">
+                            <label asp-for="NewRecipe.Title" class="form-label">Título</label>
+                            <input asp-for="NewRecipe.Title" class="form-control" />
+                            <span asp-validation-for="NewRecipe.Title" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="NewRecipe.Category" class="form-label">Categoría</label>
+                            <input asp-for="NewRecipe.Category" class="form-control" />
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="NewRecipe.Ingredients" class="form-label">Ingredientes</label>
+                            <textarea asp-for="NewRecipe.Ingredients" class="form-control" rows="2"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="NewRecipe.Instructions" class="form-label">Instrucciones</label>
+                            <textarea asp-for="NewRecipe.Instructions" class="form-control" rows="3"></textarea>
+                        </div>
+                        <button class="btn btn-primary" type="submit">Guardar receta</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-lg-7">
+            <div class="row g-3">
+                @if (!Model.Recipes.Any())
+                {
+                    <p class="text-muted">No hay recetas cargadas.</p>
+                }
+                else
+                {
+                    @foreach (var recipe in Model.Recipes)
+                    {
+                        <div class="col-12">
+                            <div class="card shadow-sm">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <div>
+                                            <h5 class="card-title mb-1">@recipe.Title</h5>
+                                            <small class="text-muted">@(!string.IsNullOrWhiteSpace(recipe.Category) ? recipe.Category : "Sin categoría")</small>
+                                        </div>
+                                        <form asp-action="DeleteRecipe" method="post">
+                                            <input type="hidden" name="id" value="@recipe.Id" />
+                                            <button class="btn btn-sm btn-outline-danger" type="submit">Eliminar</button>
+                                        </form>
+                                    </div>
+                                    @if (!string.IsNullOrWhiteSpace(recipe.Ingredients))
+                                    {
+                                        <p class="mt-2 mb-1"><strong>Ingredientes:</strong> @recipe.Ingredients</p>
+                                    }
+                                    @if (!string.IsNullOrWhiteSpace(recipe.Instructions))
+                                    {
+                                        <p class="mb-0"><strong>Instrucciones:</strong> @recipe.Instructions</p>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

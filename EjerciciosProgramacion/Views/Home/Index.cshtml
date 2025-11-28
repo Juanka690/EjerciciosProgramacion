@@ -1,0 +1,38 @@
+@{
+    ViewData["Title"] = "Ejercicios";
+    var ejercicios = new (string Titulo, string Descripcion, string Accion)[]
+    {
+        ("Lista de tareas", "Agregar, marcar y eliminar tareas diarias.", "TaskList"),
+        ("Calculadora de propinas", "Calcula propinas y totales de consumo.", "TipCalculator"),
+        ("Generador de contraseñas", "Crea contraseñas seguras y personalizadas.", "PasswordGenerator"),
+        ("Gestor de gastos", "Registra gastos, categorías y totales del mes.", "ExpenseManager"),
+        ("Sistema de reservas", "Reserva citas o servicios con horarios disponibles.", "BookingSystem"),
+        ("Gestor de notas", "Organiza notas por categorías y realiza búsquedas.", "NotesManager"),
+        ("Calendario de eventos", "Agrega eventos con recordatorios y notificaciones.", "EventCalendar"),
+        ("Plataforma de recetas", "Busca, filtra y guarda recetas favoritas.", "RecipePlatform"),
+        ("Juego de memoria", "Empareja cartas y mejora tu puntaje.", "MemoryGame"),
+        ("Plataforma de encuestas", "Crea y responde encuestas con resultados.", "SurveyPlatform"),
+        ("Cronómetro online", "Inicia, pausa y registra vueltas fácilmente.", "Stopwatch")
+    };
+}
+
+<div class="container py-4">
+    <div class="text-center mb-4">
+        <h1 class="display-5">Ejercicios de Programación</h1>
+        <p class="lead">Cada tarjeta abre una vista independiente con su funcionalidad completa.</p>
+    </div>
+    <div class="row g-4">
+        @foreach (var ejercicio in ejercicios)
+        {
+            <div class="col-12 col-md-6 col-lg-4">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">@ejercicio.Titulo</h5>
+                        <p class="card-text flex-grow-1">@ejercicio.Descripcion</p>
+                        <a asp-controller="Exercises" asp-action="@ejercicio.Accion" class="btn btn-primary mt-2">Ir al ejercicio</a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>

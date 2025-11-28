@@ -1,0 +1,55 @@
+@model EjerciciosProgramacion.Models.TipCalculatorModel
+@{
+    ViewData["Title"] = "Calculadora de propinas";
+}
+
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <div>
+            <h1 class="h3 mb-0">Calculadora de propinas</h1>
+            <p class="text-muted mb-0">Calculo realizado con C# en el servidor.</p>
+        </div>
+        <a asp-controller="Home" asp-action="Index" class="btn btn-link">Volver al índice</a>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-12 col-lg-5">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <form asp-action="TipCalculator" method="post" class="vstack gap-3">
+                        <div class="form-group">
+                            <label asp-for="Amount" class="form-label">Consumo</label>
+                            <input asp-for="Amount" class="form-control" placeholder="0" />
+                            <span asp-validation-for="Amount" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="TipPercentage" class="form-label">Propina (%)</label>
+                            <input asp-for="TipPercentage" class="form-control" />
+                            <span asp-validation-for="TipPercentage" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="People" class="form-label">Personas</label>
+                            <input asp-for="People" class="form-control" />
+                            <span asp-validation-for="People" class="text-danger"></span>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Calcular</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-lg-7">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h5 class="card-title">Resumen</h5>
+                    <p class="mb-1">Propina total: <strong>@Model.TotalTip.ToString("C")</strong></p>
+                    <p class="mb-1">Total con propina: <strong>@Model.TotalWithTip.ToString("C")</strong></p>
+                    <p class="mb-0">Por persona (@Model.People): <strong>@Model.PerPerson.ToString("C")</strong></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

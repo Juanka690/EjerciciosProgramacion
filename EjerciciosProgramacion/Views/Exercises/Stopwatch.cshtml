@@ -1,0 +1,58 @@
+@model EjerciciosProgramacion.Models.StopwatchViewModel
+@{
+    ViewData["Title"] = "Cronómetro";
+    string Format(TimeSpan t) => $"{t.Minutes:00}:{t.Seconds:00}.{t.Milliseconds:000}";
+}
+
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <div>
+            <h1 class="h3 mb-0">Cronómetro online</h1>
+            <p class="text-muted mb-0">Controlado completamente con C#.</p>
+        </div>
+        <a asp-controller="Home" asp-action="Index" class="btn btn-link">Volver al índice</a>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-body text-center">
+            <h2 class="display-5 mb-4">@Format(Model.Elapsed)</h2>
+            <div class="d-flex justify-content-center gap-2 mb-3">
+                <form asp-action="Stopwatch" method="post">
+                    <input type="hidden" name="actionType" value="start" />
+                    <button class="btn btn-primary" type="submit" @(Model.Running ? "disabled" : null)>Iniciar</button>
+                </form>
+                <form asp-action="Stopwatch" method="post">
+                    <input type="hidden" name="actionType" value="pause" />
+                    <button class="btn btn-warning" type="submit" @(Model.Running ? null : "disabled")>Pausar</button>
+                </form>
+                <form asp-action="Stopwatch" method="post">
+                    <input type="hidden" name="actionType" value="reset" />
+                    <button class="btn btn-secondary" type="submit">Reiniciar</button>
+                </form>
+                <form asp-action="Stopwatch" method="post">
+                    <input type="hidden" name="actionType" value="lap" />
+                    <button class="btn btn-outline-success" type="submit" @(Model.Running || Model.Elapsed > TimeSpan.Zero ? null : "disabled")>Registrar vuelta</button>
+                </form>
+            </div>
+            <div class="text-start mx-auto" style="max-width: 420px;">
+                <h6>Vueltas</h6>
+                @if (!Model.Laps.Any())
+                {
+                    <p class="text-muted">Aún no hay vueltas registradas.</p>
+                }
+                else
+                {
+                    <ul class="list-group">
+                        @for (int i = 0; i < Model.Laps.Count; i++)
+                        {
+                            <li class="list-group-item d-flex justify-content-between">
+                                <span>Vuelta @(i + 1)</span>
+                                <span>@Format(Model.Laps[i])</span>
+                            </li>
+                        }
+                    </ul>
+                }
+            </div>
+        </div>
+    </div>
+</div>

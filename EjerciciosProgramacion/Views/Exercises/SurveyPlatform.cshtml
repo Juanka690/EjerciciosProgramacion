@@ -1,0 +1,33 @@
+@model EjerciciosProgramacion.Models.SurveyPlatformViewModel
+@{
+    ViewData["Title"] = "Plataforma de encuestas";
+    var totalVotes = Model.Options.Sum(o => o.Votes);
+}
+
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <div>
+            <h1 class="h3 mb-0">Plataforma de encuestas</h1>
+            <p class="text-muted mb-0">Votación gestionada en C#.</p>
+        </div>
+        <a asp-controller="Home" asp-action="Index" class="btn btn-link">Volver al índice</a>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <h5 class="card-title">@Model.Question</h5>
+            <form asp-action="SurveyPlatform" method="post" class="vstack gap-2">
+                @foreach (var option in Model.Options)
+                {
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="selectedOptionId" value="@option.Id" required />
+                        <label class="form-check-label">@option.Text</label>
+                        <span class="text-muted ms-2">@option.Votes votos</span>
+                    </div>
+                }
+                <button class="btn btn-primary mt-2" type="submit">Votar</button>
+            </form>
+            <p class="mt-3 mb-0 text-muted">Total de votos: @totalVotes</p>
+        </div>
+    </div>
+</div>

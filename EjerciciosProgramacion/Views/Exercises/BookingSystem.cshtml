@@ -1,0 +1,81 @@
+@model EjerciciosProgramacion.Models.BookingSystemViewModel
+@{
+    ViewData["Title"] = "Sistema de reservas";
+}
+
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <div>
+            <h1 class="h3 mb-0">Sistema de reservas</h1>
+            <p class="text-muted mb-0">Administrado completamente en C#.</p>
+        </div>
+        <a asp-controller="Home" asp-action="Index" class="btn btn-link">Volver al índice</a>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-12 col-lg-5">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <form asp-action="BookingSystem" method="post" class="vstack gap-3">
+                        <div class="form-group">
+                            <label asp-for="NewBooking.Client" class="form-label">Cliente</label>
+                            <input asp-for="NewBooking.Client" class="form-control" />
+                            <span asp-validation-for="NewBooking.Client" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="NewBooking.Service" class="form-label">Servicio</label>
+                            <input asp-for="NewBooking.Service" class="form-control" />
+                            <span asp-validation-for="NewBooking.Service" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="NewBooking.Date" class="form-label">Fecha y hora</label>
+                            <input asp-for="NewBooking.Date" class="form-control" type="datetime-local" />
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="NewBooking.Notes" class="form-label">Notas</label>
+                            <textarea asp-for="NewBooking.Notes" class="form-control"></textarea>
+                        </div>
+                        <button class="btn btn-primary" type="submit">Reservar</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-lg-7">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Reservas</h5>
+                    @if (!Model.Bookings.Any())
+                    {
+                        <p class="text-muted">Aún no hay reservas.</p>
+                    }
+                    else
+                    {
+                        <div class="list-group">
+                            @foreach (var booking in Model.Bookings)
+                            {
+                                <div class="list-group-item d-flex justify-content-between align-items-start">
+                                    <div>
+                                        <h6 class="mb-1">@booking.Service</h6>
+                                        <small class="text-muted">@booking.Client · @booking.Date.ToString("g")</small>
+                                        @if (!string.IsNullOrWhiteSpace(booking.Notes))
+                                        {
+                                            <div class="text-muted small">@booking.Notes</div>
+                                        }
+                                    </div>
+                                    <form asp-action="CancelBooking" method="post">
+                                        <input type="hidden" name="id" value="@booking.Id" />
+                                        <button class="btn btn-sm btn-outline-danger" type="submit">Cancelar</button>
+                                    </form>
+                                </div>
+                            }
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

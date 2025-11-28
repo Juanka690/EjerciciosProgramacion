@@ -1,0 +1,70 @@
+@model EjerciciosProgramacion.Models.NotesManagerViewModel
+@{
+    ViewData["Title"] = "Gestor de notas";
+}
+
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <div>
+            <h1 class="h3 mb-0">Gestor de notas</h1>
+            <p class="text-muted mb-0">Buscar y crear notas procesadas en C#.</p>
+        </div>
+        <a asp-controller="Home" asp-action="Index" class="btn btn-link">Volver al índice</a>
+    </div>
+
+    <form asp-action="NotesManager" method="get" class="input-group mb-3">
+        <input type="text" name="search" value="@Model.Search" class="form-control" placeholder="Buscar por título, categoría o contenido" />
+        <button class="btn btn-outline-secondary" type="submit">Buscar</button>
+    </form>
+
+    <div class="card shadow-sm mb-3">
+        <div class="card-body">
+            <form asp-action="NotesManager" method="post" class="vstack gap-3">
+                <div class="form-group">
+                    <label asp-for="NewNote.Title" class="form-label">Título</label>
+                    <input asp-for="NewNote.Title" class="form-control" />
+                    <span asp-validation-for="NewNote.Title" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="NewNote.Category" class="form-label">Categoría</label>
+                    <input asp-for="NewNote.Category" class="form-control" />
+                </div>
+                <div class="form-group">
+                    <label asp-for="NewNote.Content" class="form-label">Contenido</label>
+                    <textarea asp-for="NewNote.Content" class="form-control" rows="3"></textarea>
+                </div>
+                <button class="btn btn-primary" type="submit">Guardar nota</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="row g-3">
+        @if (!Model.Notes.Any())
+        {
+            <p class="text-muted">No hay notas para mostrar.</p>
+        }
+        else
+        {
+            @foreach (var note in Model.Notes)
+            {
+                <div class="col-12 col-md-6 col-lg-4">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title">@note.Title</h5>
+                            <small class="text-muted mb-2">@(!string.IsNullOrWhiteSpace(note.Category) ? note.Category : "Sin categoría")</small>
+                            <p class="card-text flex-grow-1">@note.Content</p>
+                            <form asp-action="DeleteNote" method="post" class="mt-auto">
+                                <input type="hidden" name="id" value="@note.Id" />
+                                <button class="btn btn-outline-danger btn-sm" type="submit">Eliminar</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

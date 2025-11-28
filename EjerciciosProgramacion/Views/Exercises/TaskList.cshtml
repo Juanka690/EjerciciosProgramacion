@@ -1,0 +1,74 @@
+@model EjerciciosProgramacion.Models.TaskListViewModel
+@{
+    ViewData["Title"] = "Lista de tareas";
+}
+
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <div>
+            <h1 class="h3 mb-0">Lista de tareas</h1>
+            <p class="text-muted mb-0">Agrega, marca como completado o elimina tus pendientes usando solo C#.</p>
+        </div>
+        <a asp-controller="Home" asp-action="Index" class="btn btn-link">Volver al índice</a>
+    </div>
+
+    <div class="card mb-3 shadow-sm">
+        <div class="card-body">
+            <form asp-action="AddTask" method="post" class="row gy-2 gx-2 align-items-end">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="col-12 col-md-6">
+                    <label asp-for="NewTask.Title" class="form-label"></label>
+                    <input asp-for="NewTask.Title" class="form-control" placeholder="Ej. Comprar pan" />
+                    <span asp-validation-for="NewTask.Title" class="text-danger"></span>
+                </div>
+                <div class="col-12 col-md-3">
+                    <label asp-for="NewTask.Category" class="form-label">Categoría</label>
+                    <input asp-for="NewTask.Category" class="form-control" placeholder="Hogar, trabajo..." />
+                </div>
+                <div class="col-12 col-md-3">
+                    <button class="btn btn-primary w-100" type="submit">Agregar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    @if (!Model.Tasks.Any())
+    {
+        <p class="text-muted">Agrega tu primera tarea.</p>
+    }
+    else
+    {
+        <div class="row g-3">
+            @foreach (var task in Model.Tasks)
+            {
+                <div class="col-12 col-md-6 col-lg-4">
+                    <div class="card h-100 @(task.Done ? "border-success" : string.Empty)">
+                        <div class="card-body d-flex flex-column">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <div>
+                                    <h5 class="card-title mb-0 @(task.Done ? "text-decoration-line-through text-muted" : string.Empty)">@task.Title</h5>
+                                    <small class="text-muted">@(!string.IsNullOrWhiteSpace(task.Category) ? task.Category : "Sin categoría")</small>
+                                </div>
+                                <span class="badge @(task.Done ? "bg-success" : "bg-secondary")">@(task.Done ? "Hecha" : "Pendiente")</span>
+                            </div>
+                            <div class="mt-auto d-flex gap-2">
+                                <form asp-action="ToggleTask" method="post" class="flex-grow-1">
+                                    <input type="hidden" name="id" value="@task.Id" />
+                                    <button class="btn btn-sm @(task.Done ? "btn-outline-secondary" : "btn-success") w-100" type="submit">@(task.Done ? "Reabrir" : "Completar")</button>
+                                </form>
+                                <form asp-action="DeleteTask" method="post">
+                                    <input type="hidden" name="id" value="@task.Id" />
+                                    <button class="btn btn-sm btn-outline-danger" type="submit">Eliminar</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
